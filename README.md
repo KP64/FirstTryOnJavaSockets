@@ -1,2 +1,1 @@
-# hello-world
-MyFirstTimeUsingGitHub
+# FirstTry with Java Sockets
