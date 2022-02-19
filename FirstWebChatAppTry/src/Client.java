@@ -1,39 +1,76 @@
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class Client {
-    private static final class Send implements Runnable {
-        private final PrintWriter out;
-        private final Socket clientSocket;
-        String msg;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 
-        private Send(PrintWriter out, Socket clientSocket) {
-            this.out = out;
-            this.clientSocket = clientSocket;
-        }
+public class Client extends JFrame implements ActionListener, KeyListener {
+    String ip;
+    int port;
 
-        @Override // ! Override default Runnable
-        public void run() { // ? Run the Runnable
-            try (Scanner sc = new Scanner(System.in)) {
-                while (clientSocket.isConnected()) { // ? If connected allow Input
-                    msg = sc.nextLine(); // * Input
-                    out.println(msg); // * Output
-                    out.flush(); // ! Clears Printstream from leftover objects
-                }
-            }
-        }
+    JButton senderButton = new JButton("Send");
+    JButton exiterButton = new JButton("Exit");
+
+    JTextArea textFieldArea = new JTextArea();
+    JScrollPane scroll = new JScrollPane(textFieldArea, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+    JTextField messageTextField = new JTextField(10);
+
+    Client(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+
+        setTitle("Client");
+        setSize(800, 400);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLayout(null);
+        setAlwaysOnTop(false);
+        setLocationRelativeTo(null);
+        setResizable(false);
+        setVisible(true);
+
+        textFieldArea.setEditable(false);
+
+        scroll.setBounds(0, 0, 500, 300);
+        add(scroll);
+
+        senderButton.setBounds(550, 40, 100, 100);
+        senderButton.addActionListener(this);
+        add(senderButton);
+
+        exiterButton.setBounds(550, 160, 100, 100);
+        exiterButton.addActionListener(this);
+        add(exiterButton);
+
+        messageTextField.setBounds(0, 300, 400, 40);
+        add(messageTextField);
+
+        addKeyListener(this);
+        textFieldArea.addKeyListener(this);
+        scroll.addKeyListener(this);
+        senderButton.addKeyListener(this);
+        exiterButton.addKeyListener(this);
+        messageTextField.addKeyListener(this);
     }
 
-    private static final class Receive implements Runnable {
+    private final class Receive implements Runnable {
         private final BufferedReader in;
         private final PrintWriter out;
         private final Socket clientSocket;
-        String msg;
 
         private Receive(BufferedReader in, PrintWriter out, Socket clientSocket) {
             this.in = in;
@@ -44,10 +81,12 @@ public class Client {
         @Override
         public void run() {
             try {
-                while ((msg = in.readLine()) != null)
-                    System.out.printf("Server: %s %n", msg);
-
-                System.out.println("Server out of Service");
+                while (!Thread.interrupted()) { // (msg = in.readLine()) != null
+                    if (!in.ready())
+                        continue;
+                    textFieldArea.append("Server: " + in.readLine() + "\n"); // ! This is where Exception happens
+                }
+                textFieldArea.append("Server out of Service\n");
                 out.close();
                 clientSocket.close();
             } catch (IOException io) {
@@ -56,26 +95,77 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) {
-        try (Socket clientSocket = new Socket("localhost", 5000)) {
-            try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream())) {
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+    void Sender(PrintWriter out) {
+        String msg = messageTextField.getText();
+        messageTextField.setText(null);
+        if (msg.trim().isEmpty())
+            return;
 
-                    Thread sender = new Thread(new Send(out, clientSocket));
-                    sender.start();
+        textFieldArea.append("You: " + msg + "\n");
+        out.println(msg);
+        out.flush();
+    }
 
-                    Thread receiver = new Thread(new Receive(in, out, clientSocket));
-                    receiver.start();
+    transient Socket clientSocket;
+    transient PrintWriter out;
+    transient BufferedReader in;
+    transient Thread receiver;
 
-                    receiver.join();
-                    sender.join();
-                }
-            }
+    void creater() {
+        try {
+            clientSocket = new Socket(ip, port);
+            out = new PrintWriter(clientSocket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            receiver = new Thread(new Receive(in, out, clientSocket));
+            receiver.start();
         } catch (IOException io) {
             System.err.println("IOException: " + io.getMessage());
-        } catch (InterruptedException e) {
-            System.err.println("InterruptedException: " + e.getMessage());
-            Thread.currentThread().interrupt();
         }
+
+    }
+
+    void termination() {
+        try {
+            receiver.interrupt();
+            // System.out.println(receive.isAlive());
+            in.close();
+            out.close();
+            clientSocket.close();
+        } catch (IOException io) {
+            System.err.println("(line: 97)IOException: " + io.getMessage());
+        } finally {
+            dispose();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER)
+            Sender(out);
+        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
+            termination();
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == senderButton)
+            Sender(out);
+        else if (e.getSource() == exiterButton)
+            termination();
+
     }
 }
