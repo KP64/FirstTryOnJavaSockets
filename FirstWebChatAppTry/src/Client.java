@@ -90,15 +90,64 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                 out.close();
                 clientSocket.close();
             } catch (IOException io) {
-                System.err.println(iox + io.getMessage());
+                // ! System.err.println(iox + io.getMessage());
             }
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getEnclosingInstance().hashCode();
+            result = prime * result + ((clientSocket == null) ? 0 : clientSocket.hashCode());
+            result = prime * result + ((in == null) ? 0 : in.hashCode());
+            result = prime * result + ((out == null) ? 0 : out.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Receive other = (Receive) obj;
+            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+                return false;
+            if (clientSocket == null) {
+                if (other.clientSocket != null)
+                    return false;
+            } else if (!clientSocket.equals(other.clientSocket))
+                return false;
+            if (in == null) {
+                if (other.in != null)
+                    return false;
+            } else if (!in.equals(other.in))
+                return false;
+            if (out == null) {
+                if (other.out != null)
+                    return false;
+            } else if (!out.equals(other.out))
+                return false;
+            return true;
+        }
+
+        private Client getEnclosingInstance() {
+            return Client.this;
+        }
+
+        @Override
+        public String toString() {
+            return "Receive [clientSocket=" + clientSocket + ", in=" + in + ", out=" + out + "]";
         }
     }
 
     void Sender(PrintWriter out) {
         String msg = messageTextField.getText();
         messageTextField.setText(null);
-        if (msg.trim().isEmpty())
+        if (msg.trim().isEmpty() || out == null)
             return;
 
         textFieldArea.append("You: " + msg + "\n");
@@ -120,7 +169,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             receiver = new Thread(new Receive(in, out, clientSocket));
             receiver.start();
         } catch (IOException io) {
-            System.err.println(iox + io.getMessage());
+            // ! System.err.println(iox + io.getMessage());
         }
 
     }
@@ -167,5 +216,95 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         else if (e.getSource() == exiterButton)
             termination();
 
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((clientSocket == null) ? 0 : clientSocket.hashCode());
+        result = prime * result + ((exiterButton == null) ? 0 : exiterButton.hashCode());
+        result = prime * result + ((in == null) ? 0 : in.hashCode());
+        result = prime * result + ((ip == null) ? 0 : ip.hashCode());
+        result = prime * result + ((messageTextField == null) ? 0 : messageTextField.hashCode());
+        result = prime * result + ((out == null) ? 0 : out.hashCode());
+        result = prime * result + port;
+        result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
+        result = prime * result + ((scroll == null) ? 0 : scroll.hashCode());
+        result = prime * result + ((senderButton == null) ? 0 : senderButton.hashCode());
+        result = prime * result + ((textFieldArea == null) ? 0 : textFieldArea.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Client other = (Client) obj;
+        if (clientSocket == null) {
+            if (other.clientSocket != null)
+                return false;
+        } else if (!clientSocket.equals(other.clientSocket))
+            return false;
+        if (exiterButton == null) {
+            if (other.exiterButton != null)
+                return false;
+        } else if (!exiterButton.equals(other.exiterButton))
+            return false;
+        if (in == null) {
+            if (other.in != null)
+                return false;
+        } else if (!in.equals(other.in))
+            return false;
+        if (ip == null) {
+            if (other.ip != null)
+                return false;
+        } else if (!ip.equals(other.ip))
+            return false;
+        if (messageTextField == null) {
+            if (other.messageTextField != null)
+                return false;
+        } else if (!messageTextField.equals(other.messageTextField))
+            return false;
+        if (out == null) {
+            if (other.out != null)
+                return false;
+        } else if (!out.equals(other.out))
+            return false;
+        if (port != other.port)
+            return false;
+        if (receiver == null) {
+            if (other.receiver != null)
+                return false;
+        } else if (!receiver.equals(other.receiver))
+            return false;
+        if (scroll == null) {
+            if (other.scroll != null)
+                return false;
+        } else if (!scroll.equals(other.scroll))
+            return false;
+        if (senderButton == null) {
+            if (other.senderButton != null)
+                return false;
+        } else if (!senderButton.equals(other.senderButton))
+            return false;
+        if (textFieldArea == null) {
+            if (other.textFieldArea != null)
+                return false;
+        } else if (!textFieldArea.equals(other.textFieldArea))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Client [clientSocket=" + clientSocket + ", exiterButton=" + exiterButton + ", in=" + in + ", ip=" + ip
+                + ", messageTextField=" + messageTextField + ", out=" + out + ", port=" + port + ", receiver="
+                + receiver + ", scroll=" + scroll + ", senderButton=" + senderButton + ", textFieldArea="
+                + textFieldArea + "]";
     }
 }

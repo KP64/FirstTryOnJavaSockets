@@ -109,4 +109,65 @@ public class ClientConnector extends JFrame implements ActionListener, KeyListen
         // TODO Auto-generated method stub
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((Confirmer == null) ? 0 : Confirmer.hashCode());
+        result = prime * result + ((Exiter == null) ? 0 : Exiter.hashCode());
+        result = prime * result + ((IPField == null) ? 0 : IPField.hashCode());
+        result = prime * result + ((IPLabel == null) ? 0 : IPLabel.hashCode());
+        result = prime * result + ((PortField == null) ? 0 : PortField.hashCode());
+        result = prime * result + ((PortLabel == null) ? 0 : PortLabel.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ClientConnector other = (ClientConnector) obj;
+        if (Confirmer == null) {
+            if (other.Confirmer != null)
+                return false;
+        } else if (!Confirmer.equals(other.Confirmer))
+            return false;
+        if (Exiter == null) {
+            if (other.Exiter != null)
+                return false;
+        } else if (!Exiter.equals(other.Exiter))
+            return false;
+        if (IPField == null) {
+            if (other.IPField != null)
+                return false;
+        } else if (!IPField.equals(other.IPField))
+            return false;
+        if (IPLabel == null) {
+            if (other.IPLabel != null)
+                return false;
+        } else if (!IPLabel.equals(other.IPLabel))
+            return false;
+        if (PortField == null) {
+            if (other.PortField != null)
+                return false;
+        } else if (!PortField.equals(other.PortField))
+            return false;
+        if (PortLabel == null) {
+            if (other.PortLabel != null)
+                return false;
+        } else if (!PortLabel.equals(other.PortLabel))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientConnector [Confirmer=" + Confirmer + ", Exiter=" + Exiter + ", IPField=" + IPField + ", IPLabel="
+                + IPLabel + ", PortField=" + PortField + ", PortLabel=" + PortLabel + "]";
+    }
+
 }
