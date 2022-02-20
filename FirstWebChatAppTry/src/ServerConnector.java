@@ -61,7 +61,7 @@ public class ServerConnector extends JFrame implements ActionListener, KeyListen
             if (port < 0 || port > 65535) {
                 JOptionPane.showMessageDialog(null, "Port must be between 0 and 65535", "PortError",
                         JOptionPane.ERROR_MESSAGE);
-                throw new IllegalArgumentException("Port must be between 0 and 65535");
+                return;
             }
             dispose();
             new Server(port).creater();
@@ -90,7 +90,6 @@ public class ServerConnector extends JFrame implements ActionListener, KeyListen
             Redirect();
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             dispose();
-
     }
 
     @Override

@@ -82,10 +82,10 @@ public class Client extends JFrame implements ActionListener, KeyListener {
         @Override
         public void run() {
             try {
-                while (!Thread.interrupted()) { // (msg = in.readLine()) != null
+                while (!Thread.interrupted()) // (msg = in.readLine()) != null
                     if (in.ready())
                         textFieldArea.append("Server: " + in.readLine() + "\n"); // ! This is where Exception happens
-                }
+
                 textFieldArea.append("Server out of Service\n");
                 out.close();
                 clientSocket.close();
@@ -194,7 +194,6 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             Sender(out);
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             termination();
-
     }
 
     @Override
@@ -215,7 +214,6 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             Sender(out);
         else if (e.getSource() == exiterButton)
             termination();
-
     }
 
     @Override
