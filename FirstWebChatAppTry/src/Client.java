@@ -70,78 +70,27 @@ public class Client extends JFrame implements ActionListener, KeyListener {
 
     private final class Receive implements Runnable {
         private final BufferedReader in;
-        private final PrintWriter out;
-        private final Socket clientSocket;
 
-        private Receive(BufferedReader in, PrintWriter out, Socket clientSocket) {
+        private Receive(BufferedReader in) {
             this.in = in;
-            this.out = out;
-            this.clientSocket = clientSocket;
         }
+
+        String msg;
 
         @Override
         public void run() {
             try {
-                while (!Thread.interrupted()) // (msg = in.readLine()) != null
-                    if (in.ready())
-                        textFieldArea.append("Server: " + in.readLine() + "\n"); // ! This is where Exception happens
-
+                while (!receiver.isInterrupted())
+                    if ((msg = in.readLine()) != null)
+                        textFieldArea.append("Server: " + msg + "\n");
+                    else
+                        break;
                 textFieldArea.append("Server out of Service\n");
-                out.close();
-                clientSocket.close();
             } catch (IOException io) {
                 // ! System.err.println(iox + io.getMessage());
             }
         }
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + getEnclosingInstance().hashCode();
-            result = prime * result + ((clientSocket == null) ? 0 : clientSocket.hashCode());
-            result = prime * result + ((in == null) ? 0 : in.hashCode());
-            result = prime * result + ((out == null) ? 0 : out.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Receive other = (Receive) obj;
-            if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
-                return false;
-            if (clientSocket == null) {
-                if (other.clientSocket != null)
-                    return false;
-            } else if (!clientSocket.equals(other.clientSocket))
-                return false;
-            if (in == null) {
-                if (other.in != null)
-                    return false;
-            } else if (!in.equals(other.in))
-                return false;
-            if (out == null) {
-                if (other.out != null)
-                    return false;
-            } else if (!out.equals(other.out))
-                return false;
-            return true;
-        }
-
-        private Client getEnclosingInstance() {
-            return Client.this;
-        }
-
-        @Override
-        public String toString() {
-            return "Receive [clientSocket=" + clientSocket + ", in=" + in + ", out=" + out + "]";
-        }
     }
 
     void Sender(PrintWriter out) {
@@ -166,23 +115,27 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             out = new PrintWriter(clientSocket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-            receiver = new Thread(new Receive(in, out, clientSocket));
+            receiver = new Thread(new Receive(in));
             receiver.start();
         } catch (IOException io) {
             // ! System.err.println(iox + io.getMessage());
         }
-
     }
 
     void termination() {
         try {
-            receiver.interrupt();
-            // System.out.println(receive.isAlive());
-            in.close();
-            out.close();
             clientSocket.close();
+            // System.out.println("Closed clientSocket");
+
+            in.close();
+            // System.out.println("Closed in");
+            out.close();
+            // System.out.println("Closed out");
+
+            receiver.interrupt();
+            // System.out.println("Interrupted");
         } catch (IOException io) {
-            System.err.println(iox + io.getMessage());
+            // ! System.err.println(iox + io.getMessage());
         } finally {
             dispose();
         }
@@ -216,93 +169,4 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             termination();
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((clientSocket == null) ? 0 : clientSocket.hashCode());
-        result = prime * result + ((exiterButton == null) ? 0 : exiterButton.hashCode());
-        result = prime * result + ((in == null) ? 0 : in.hashCode());
-        result = prime * result + ((ip == null) ? 0 : ip.hashCode());
-        result = prime * result + ((messageTextField == null) ? 0 : messageTextField.hashCode());
-        result = prime * result + ((out == null) ? 0 : out.hashCode());
-        result = prime * result + port;
-        result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
-        result = prime * result + ((scroll == null) ? 0 : scroll.hashCode());
-        result = prime * result + ((senderButton == null) ? 0 : senderButton.hashCode());
-        result = prime * result + ((textFieldArea == null) ? 0 : textFieldArea.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Client other = (Client) obj;
-        if (clientSocket == null) {
-            if (other.clientSocket != null)
-                return false;
-        } else if (!clientSocket.equals(other.clientSocket))
-            return false;
-        if (exiterButton == null) {
-            if (other.exiterButton != null)
-                return false;
-        } else if (!exiterButton.equals(other.exiterButton))
-            return false;
-        if (in == null) {
-            if (other.in != null)
-                return false;
-        } else if (!in.equals(other.in))
-            return false;
-        if (ip == null) {
-            if (other.ip != null)
-                return false;
-        } else if (!ip.equals(other.ip))
-            return false;
-        if (messageTextField == null) {
-            if (other.messageTextField != null)
-                return false;
-        } else if (!messageTextField.equals(other.messageTextField))
-            return false;
-        if (out == null) {
-            if (other.out != null)
-                return false;
-        } else if (!out.equals(other.out))
-            return false;
-        if (port != other.port)
-            return false;
-        if (receiver == null) {
-            if (other.receiver != null)
-                return false;
-        } else if (!receiver.equals(other.receiver))
-            return false;
-        if (scroll == null) {
-            if (other.scroll != null)
-                return false;
-        } else if (!scroll.equals(other.scroll))
-            return false;
-        if (senderButton == null) {
-            if (other.senderButton != null)
-                return false;
-        } else if (!senderButton.equals(other.senderButton))
-            return false;
-        if (textFieldArea == null) {
-            if (other.textFieldArea != null)
-                return false;
-        } else if (!textFieldArea.equals(other.textFieldArea))
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "Client [clientSocket=" + clientSocket + ", exiterButton=" + exiterButton + ", in=" + in + ", ip=" + ip
-                + ", messageTextField=" + messageTextField + ", out=" + out + ", port=" + port + ", receiver="
-                + receiver + ", scroll=" + scroll + ", senderButton=" + senderButton + ", textFieldArea="
-                + textFieldArea + "]";
-    }
 }
