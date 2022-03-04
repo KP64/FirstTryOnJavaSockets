@@ -43,14 +43,14 @@ public class ClientConnector extends JFrame implements ActionListener, KeyListen
         add(PortLabel);
 
         PortField.setBounds(30, 40, 200, 30);
-        PortField.setToolTipText("Port of your Server");
+        PortField.setToolTipText("Port of the Server you want to connect to");
         add(PortField);
 
         IPLabel.setBounds(30, 90, 50, 20);
         add(IPLabel);
 
         IPField.setBounds(30, 120, 200, 30);
-        IPField.setToolTipText("IP of your Server");
+        IPField.setToolTipText("IP of the Server you want to connect to");
         add(IPField);
 
         addKeyListener(this);
