@@ -18,7 +18,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 
 public class Server extends JFrame implements ActionListener, KeyListener {
-    static final String iox = "IOException: ";
+    static final String IOX = "IOException: ";
 
     int port;
 
@@ -83,7 +83,7 @@ public class Server extends JFrame implements ActionListener, KeyListener {
             receive = new Thread(new Receiver());
             receive.start();
         } catch (IOException io) {
-            // ! System.err.println(iox + io.getMessage());
+            // ! System.err.println(IOX + io.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class Server extends JFrame implements ActionListener, KeyListener {
             receive.interrupt();
             // System.out.println("Interrupted");
         } catch (IOException io) {
-            // ! System.err.println(iox + io.getMessage());
+            // ! System.err.println(IOX + io.getMessage());
         } finally {
             dispose();
         }
@@ -121,7 +121,7 @@ public class Server extends JFrame implements ActionListener, KeyListener {
                         break;
                 textFieldArea.append("Client Disconnected\n");
             } catch (IOException e) {
-                // ! System.err.println(iox + e.getMessage());
+                // ! System.err.println(IOX + e.getMessage());
             }
         }
     }
