@@ -17,4 +17,4 @@
 
 ## Note ℹ️
 
-### For connecting to the Server outside the local network of the Server the Port in which the server is listening to should be forwarded
+### Port Forwarding is needed to connect to the Server from outside its local network❕
