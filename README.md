@@ -4,8 +4,8 @@
 
 ## Folder Structure 📁
 
-- `src`: the folder to maintain sources
-- `bin`: the folder to maintain output files
+-   `src`: the folder to maintain sources
+-   `bin`: the folder to maintain output files
 
 ## How to use
 

@@ -1,3 +1,4 @@
+package client;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -87,13 +88,13 @@ public class Client extends JFrame implements ActionListener, KeyListener {
                         break;
                 textFieldArea.append("Server out of Service\n");
             } catch (IOException io) {
-                // ! System.err.println(IOX + io.getMessage());
+
             }
         }
 
     }
 
-    void Sender(PrintWriter out) {
+    void sender(PrintWriter out) {
         String msg = messageTextField.getText();
         messageTextField.setText(null);
         if (msg.trim().isEmpty() || out == null)
@@ -118,24 +119,22 @@ public class Client extends JFrame implements ActionListener, KeyListener {
             receiver = new Thread(new Receive(in));
             receiver.start();
         } catch (IOException io) {
-            // ! System.err.println(IOX + io.getMessage());
+
         }
     }
 
     void termination() {
         try {
             clientSocket.close();
-            // System.out.println("Closed clientSocket");
 
             in.close();
-            // System.out.println("Closed in");
+
             out.close();
-            // System.out.println("Closed out");
 
             receiver.interrupt();
-            // System.out.println("Interrupted");
+
         } catch (IOException io) {
-            // ! System.err.println(IOX + io.getMessage());
+
         } finally {
             dispose();
         }
@@ -144,7 +143,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
-            Sender(out);
+            sender(out);
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             termination();
     }
@@ -164,7 +163,7 @@ public class Client extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == senderButton)
-            Sender(out);
+            sender(out);
         else if (e.getSource() == exiterButton)
             termination();
     }

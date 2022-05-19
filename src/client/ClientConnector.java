@@ -1,3 +1,5 @@
+package client;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,14 +14,14 @@ import javax.swing.WindowConstants;
 
 public class ClientConnector extends JFrame implements ActionListener, KeyListener {
 
-    JButton Confirmer = new JButton("Confirm");
-    JButton Exiter = new JButton("Exit");
+    JButton confirmButton = new JButton("Confirm");
+    JButton exitButton = new JButton("Exit");
 
-    JLabel PortLabel = new JLabel("Port:");
-    JLabel IPLabel = new JLabel("IP:");
+    JLabel portLabel = new JLabel("Port:");
+    JLabel ipLabel = new JLabel("IP:");
 
-    JTextField PortField = new JTextField("5000");
-    JTextField IPField = new JTextField("localhost");
+    JTextField portField = new JTextField("5000");
+    JTextField ipField = new JTextField("localhost");
 
     ClientConnector() {
         setTitle("ClientConnector");
@@ -31,43 +33,43 @@ public class ClientConnector extends JFrame implements ActionListener, KeyListen
         setResizable(false);
         setVisible(true);
 
-        Confirmer.addActionListener(this);
-        Confirmer.setBounds(250, 30, 100, 50);
-        add(Confirmer);
+        confirmButton.addActionListener(this);
+        confirmButton.setBounds(250, 30, 100, 50);
+        add(confirmButton);
 
-        Exiter.addActionListener(this);
-        Exiter.setBounds(250, 90, 100, 50);
-        add(Exiter);
+        exitButton.addActionListener(this);
+        exitButton.setBounds(250, 90, 100, 50);
+        add(exitButton);
 
-        PortLabel.setBounds(30, 20, 50, 20);
-        add(PortLabel);
+        portLabel.setBounds(30, 20, 50, 20);
+        add(portLabel);
 
-        PortField.setBounds(30, 40, 200, 30);
-        PortField.setToolTipText("Port of the Server you want to connect to");
-        add(PortField);
+        portField.setBounds(30, 40, 200, 30);
+        portField.setToolTipText("Port of the Server you want to connect to");
+        add(portField);
 
-        IPLabel.setBounds(30, 90, 50, 20);
-        add(IPLabel);
+        ipLabel.setBounds(30, 90, 50, 20);
+        add(ipLabel);
 
-        IPField.setBounds(30, 120, 200, 30);
-        IPField.setToolTipText("IP of the Server you want to connect to");
-        add(IPField);
+        ipField.setBounds(30, 120, 200, 30);
+        ipField.setToolTipText("IP of the Server you want to connect to");
+        add(ipField);
 
         addKeyListener(this);
-        Confirmer.addKeyListener(this); // To Prevent
-        Exiter.addKeyListener(this); // Frame from
-        PortField.addKeyListener(this); // not being
-        IPField.addKeyListener(this); // Focused
+        confirmButton.addKeyListener(this); // To Prevent
+        exitButton.addKeyListener(this); // Frame from
+        portField.addKeyListener(this); // not being
+        ipField.addKeyListener(this); // Focused
     }
 
     public static void main(String[] args) {
         new ClientConnector();
     }
 
-    public void Redirect() {
+    public void redirect() {
         try {
-            String IP = IPField.getText();
-            int port = Integer.parseInt(PortField.getText());
+            String ip = ipField.getText();
+            int port = Integer.parseInt(portField.getText());
 
             if (port < 0 || port > 65535) {
                 JOptionPane.showMessageDialog(null, "Port must be between 0 and 65535", "PortError",
@@ -75,19 +77,19 @@ public class ClientConnector extends JFrame implements ActionListener, KeyListen
                 return;
             }
             dispose();
-            new Client(IP, port).creater();
-        } catch (NumberFormatException NFE) {
-            JOptionPane.showMessageDialog(null, "NumberFormatException: " + NFE.getMessage(), "NFE",
+            new Client(ip, port).creater();
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(null, "NumberFormatException: " + nfe.getMessage(), "nfe",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == Exiter)
+        if (e.getSource() == exitButton)
             dispose();
-        else if (e.getSource() == Confirmer)
-            Redirect();
+        else if (e.getSource() == confirmButton)
+            redirect();
     }
 
     @Override
@@ -98,7 +100,7 @@ public class ClientConnector extends JFrame implements ActionListener, KeyListen
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
-            Redirect();
+            redirect();
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             dispose();
     }

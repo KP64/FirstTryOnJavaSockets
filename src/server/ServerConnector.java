@@ -1,3 +1,5 @@
+package server;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -12,12 +14,12 @@ import javax.swing.WindowConstants;
 
 public class ServerConnector extends JFrame implements ActionListener, KeyListener {
 
-    JButton Confirmer = new JButton("Confirm");
-    JButton Exiter = new JButton("Exit");
+    JButton confirmButton = new JButton("Confirm");
+    JButton exitButton = new JButton("Exit");
 
-    JLabel PortLabel = new JLabel("Port:");
+    JLabel portLabel = new JLabel("Port:");
 
-    JTextField PortField = new JTextField("5000");
+    JTextField portField = new JTextField("5000");
 
     ServerConnector() {
         setTitle("ServerConnector");
@@ -29,34 +31,34 @@ public class ServerConnector extends JFrame implements ActionListener, KeyListen
         setResizable(false);
         setVisible(true);
 
-        Confirmer.addActionListener(this);
-        Confirmer.setBounds(250, 0, 100, 50);
-        add(Confirmer);
+        confirmButton.addActionListener(this);
+        confirmButton.setBounds(250, 0, 100, 50);
+        add(confirmButton);
 
-        Exiter.addActionListener(this);
-        Exiter.setBounds(250, 60, 100, 50);
-        add(Exiter);
+        exitButton.addActionListener(this);
+        exitButton.setBounds(250, 60, 100, 50);
+        add(exitButton);
 
-        PortLabel.setBounds(30, 20, 50, 20);
-        add(PortLabel);
+        portLabel.setBounds(30, 20, 50, 20);
+        add(portLabel);
 
-        PortField.setBounds(30, 40, 200, 30);
-        PortField.setToolTipText("Port of your Server");
-        add(PortField);
+        portField.setBounds(30, 40, 200, 30);
+        portField.setToolTipText("Port of your Server");
+        add(portField);
 
         addKeyListener(this);
-        Confirmer.addKeyListener(this); // To Prevent
-        Exiter.addKeyListener(this); // Frame not being
-        PortField.addKeyListener(this); // Focused
+        confirmButton.addKeyListener(this); // To Prevent
+        exitButton.addKeyListener(this); // Frame not being
+        portField.addKeyListener(this); // Focused
     }
 
     public static void main(String[] args) {
         new ServerConnector();
     }
 
-    public void Redirect() {
+    public void redirect() {
         try {
-            int port = Integer.parseInt(PortField.getText());
+            int port = Integer.parseInt(portField.getText());
 
             if (port < 0 || port > 65535) {
                 JOptionPane.showMessageDialog(null, "Port must be between 0 and 65535", "PortError",
@@ -65,18 +67,18 @@ public class ServerConnector extends JFrame implements ActionListener, KeyListen
             }
             dispose();
             new Server(port).creater();
-        } catch (NumberFormatException NFE) {
-            JOptionPane.showMessageDialog(null, "NumberFormatException: " + NFE.getMessage(), "NFE",
+        } catch (NumberFormatException nfe) {
+            JOptionPane.showMessageDialog(null, "NumberFormatException: " + nfe.getMessage(), "nfe",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == Exiter)
+        if (e.getSource() == exitButton)
             dispose();
-        else if (e.getSource() == Confirmer)
-            Redirect();
+        else if (e.getSource() == confirmButton)
+            redirect();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class ServerConnector extends JFrame implements ActionListener, KeyListen
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
-            Redirect();
+            redirect();
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             dispose();
     }

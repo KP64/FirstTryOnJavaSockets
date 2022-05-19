@@ -1,3 +1,5 @@
+package server;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -83,26 +85,24 @@ public class Server extends JFrame implements ActionListener, KeyListener {
             receive = new Thread(new Receiver());
             receive.start();
         } catch (IOException io) {
-            // ! System.err.println(IOX + io.getMessage());
+
         }
     }
 
     void termination() {
         try {
             clientSocket.close();
-            // System.out.println("Closed ClientSocket");
+
             serverSocket.close();
-            // System.out.println("Closed serverSocket");
 
             reader.close();
-            // System.out.println("Closed reader");
+
             out.close();
-            // System.out.println("Closed out");
 
             receive.interrupt();
-            // System.out.println("Interrupted");
+
         } catch (IOException io) {
-            // ! System.err.println(IOX + io.getMessage());
+
         } finally {
             dispose();
         }
@@ -121,12 +121,12 @@ public class Server extends JFrame implements ActionListener, KeyListener {
                         break;
                 textFieldArea.append("Client Disconnected\n");
             } catch (IOException e) {
-                // ! System.err.println(IOX + e.getMessage());
+
             }
         }
     }
 
-    void Sender(PrintWriter out) {
+    void sender(PrintWriter out) {
         String msg = messageTextField.getText();
         messageTextField.setText(null);
         if (msg.trim().isEmpty())
@@ -140,7 +140,7 @@ public class Server extends JFrame implements ActionListener, KeyListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == senderButton)
-            Sender(out);
+            sender(out);
         else if (e.getSource() == exiterButton)
             termination();
     }
@@ -153,7 +153,7 @@ public class Server extends JFrame implements ActionListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_ENTER)
-            Sender(out);
+            sender(out);
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE)
             termination();
     }
